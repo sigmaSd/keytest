@@ -1,9 +1,20 @@
 import * as slint from "npm:slint-ui@1.12.1";
 import slintUi from "./keyboard_tester.slint" with { type: "text" };
 
+interface SlintKeyEvent {
+  text: string;
+  key: string;
+}
+
 interface KeyboardWindow {
   tested_keys: string[];
+  last_key_text: string;
+  shift_held: boolean;
+  ctrl_held: boolean;
+  alt_held: boolean;
   key_clicked: (key: string) => void;
+  physical_key_pressed: (event: SlintKeyEvent) => void;
+  physical_key_released: (event: SlintKeyEvent) => void;
   run: () => Promise<void>;
   Utils: {
     contains: (a: string[], v: string) => boolean;
@@ -23,9 +34,9 @@ if (import.meta.main) {
   // Initialize tested keys array
   window.tested_keys = [];
   const testedKeysSet = new Set<string>();
+  let unknownKeyCounter = 0;
 
-  // Handle key clicks from the UI (both mouse and keyboard)
-  window.key_clicked = (key: string) => {
+  const handleKeyPress = (key: string) => {
     console.log(`Key tested: "${key}"`);
 
     // Add to tested keys if not already tested
@@ -44,6 +55,72 @@ if (import.meta.main) {
           "🎉 CONGRATULATIONS! All keys tested! Your keyboard is working perfectly! 🎉",
         );
       }
+    }
+  };
+
+  // Handle key clicks from the UI (both mouse and keyboard)
+  window.key_clicked = (key: string) => {
+    handleKeyPress(key);
+    window.last_key_text = `last key: ${key}`;
+  };
+
+  window.physical_key_pressed = (event: SlintKeyEvent) => {
+    let key_to_process;
+
+    switch (event.key) {
+      case "Shift":
+        window.shift_held = true;
+        key_to_process = "Shift";
+        break;
+      case "Control":
+        window.ctrl_held = true;
+        key_to_process = "Control";
+        break;
+      case "Alt":
+        window.alt_held = true;
+        key_to_process = "Alt";
+        break;
+      case "Space":
+        key_to_process = "Space";
+        break;
+      case "Backspace":
+        key_to_process = "Backspace";
+        break;
+      case "Tab":
+        key_to_process = "Tab";
+        break;
+      case "Enter":
+      case "Return":
+        key_to_process = "Enter";
+        break;
+      case "CapsLock":
+        key_to_process = "CapsLock";
+        break;
+      default:
+        key_to_process = event.text;
+        break;
+    }
+
+    if (key_to_process) {
+      handleKeyPress(key_to_process);
+      window.last_key_text = `last key: ${key_to_process}`;
+    } else {
+      unknownKeyCounter++;
+      window.last_key_text = `last key: unknown ${unknownKeyCounter}`;
+    }
+  };
+
+  window.physical_key_released = (event: SlintKeyEvent) => {
+    switch (event.key) {
+      case "Shift":
+        window.shift_held = false;
+        break;
+      case "Control":
+        window.ctrl_held = false;
+        break;
+      case "Alt":
+        window.alt_held = false;
+        break;
     }
   };
 

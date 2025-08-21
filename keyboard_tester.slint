@@ -8,6 +8,7 @@ component KeyButton inherits Rectangle {
     in property <string> text;
     in property <string> shift-text: "";
     in property <bool> is-tested: false;
+    in property <bool> is-held: false;
     in property <length> key-width: 45px;
     in property <length> key-height: 45px;
     
@@ -17,16 +18,18 @@ component KeyButton inherits Rectangle {
     height: key-height;
     border-radius: 8px;
     border-width: 2px;
-    border-color: is-tested ? #00E676 : #37474F;
-    background: is-tested ? 
-        @linear-gradient(135deg, #E8F5E8 0%, #C8E6C9 100%) : 
-        @linear-gradient(135deg, #FAFAFA 0%, #F0F0F0 100%);
-    drop-shadow-blur: is-tested ? 6px : 2px;
-    drop-shadow-color: is-tested ? #4CAF5080 : #00000020;
-    drop-shadow-offset-y: is-tested ? 3px : 1px;
+    border-color: is-held ? #FBC02D : (is-tested ? #00E676 : #37474F);
+    background: is-held ? 
+        @linear-gradient(135deg, #FFF9C4 0%, #FFF59D 100%) : 
+        (is-tested ? 
+            @linear-gradient(135deg, #E8F5E8 0%, #C8E6C9 100%) : 
+            @linear-gradient(135deg, #FAFAFA 0%, #F0F0F0 100%));
+    drop-shadow-blur: is-held ? 8px : (is-tested ? 6px : 2px);
+    drop-shadow-color: is-held ? #FBC02D80 : (is-tested ? #4CAF5080 : #00000020);
+    drop-shadow-offset-y: is-held ? 4px : (is-tested ? 3px : 1px);
     
     animate border-color, background, drop-shadow-blur, drop-shadow-offset-y {
-        duration: 200ms; 
+        duration: 150ms; 
         easing: ease-out; 
     }
     
@@ -38,7 +41,7 @@ component KeyButton inherits Rectangle {
             text: root.shift-text;
             font-size: 9px;
             font-weight: 500;
-            color: root.is-tested ? #2E7D32 : #78909C;
+            color: root.is-held ? #C79100 : (root.is-tested ? #2E7D32 : #78909C);
             horizontal-alignment: center;
         }
         
@@ -46,7 +49,7 @@ component KeyButton inherits Rectangle {
             text: root.text;
             font-size: root.shift-text != "" ? 13px : 15px;
             font-weight: 600;
-            color: root.is-tested ? #1B5E20 : #37474F;
+            color: root.is-held ? #A67900 : (root.is-tested ? #1B5E20 : #37474F);
             horizontal-alignment: center;
         }
     }
@@ -85,21 +88,30 @@ component SpaceKey inherits KeyButton {
 export component MainWindow inherits Window {
     title: "Modern Keyboard Tester";
     width: 1100px;
-    height: 600px;
+    height: 650px;
     background: @linear-gradient(135deg, #1E3A8A 0%, #3B82F6 50%, #06B6D4 100%);
     
     in-out property <[string]> tested-keys: [];
+    in-out property <string> last-key-text: "last key: -";
+    in property <bool> shift-held: false;
+    in property <bool> ctrl-held: false;
+    in property <bool> alt-held: false;
+
     callback key-clicked(string);
+    callback physical-key-pressed(KeyEvent);
+    callback physical-key-released(KeyEvent);
     
     // Add keyboard focus capability
     forward-focus: focus-scope;
     
     focus-scope := FocusScope {
         key-pressed(event) => {
-            if (event.text != "") {
-                debug(event);
-                key-clicked(event.text);
-            }
+            debug(event);
+            physical-key-pressed(event);
+            accept
+        }
+        key-released(event) => {
+            physical-key-released(event);
             accept
         }
     }
@@ -134,7 +146,7 @@ export component MainWindow inherits Window {
                 }
                 
                 Text {
-                    text: "Test all your keys! Green = Working ✨";
+                    text: root.last-key-text;
                     font-size: 16px;
                     font-weight: 500;
                     color: #E0E7FF;
@@ -448,7 +460,7 @@ export component MainWindow inherits Window {
                         
                         KeyButton {
                             text: "⇧";
-                            key-width: 95px;
+                            key-width: 95px; is-held: root.shift-held;
                             is-tested: Utils.contains(tested-keys, "Shift");
                             clicked(key) => { key-clicked("Shift"); }
                         }
@@ -507,7 +519,7 @@ export component MainWindow inherits Window {
                         }
                         KeyButton {
                             text: "⇧";
-                            key-width: 95px;
+                            key-width: 95px; is-held: root.shift-held;
                             is-tested: Utils.contains(tested-keys, "Shift");
                             clicked(key) => { key-clicked("Shift"); }
                         }
@@ -520,13 +532,13 @@ export component MainWindow inherits Window {
                         
                         KeyButton {
                             text: "Ctrl";
-                            key-width: 65px;
+                            key-width: 65px; is-held: root.ctrl-held;
                             is-tested: Utils.contains(tested-keys, "Control");
                             clicked(key) => { key-clicked("Control"); }
                         }
                         KeyButton {
                             text: "Alt";
-                            key-width: 55px;
+                            key-width: 55px; is-held: root.alt-held;
                             is-tested: Utils.contains(tested-keys, "Alt");
                             clicked(key) => { key-clicked(key); }
                         }
@@ -536,20 +548,23 @@ export component MainWindow inherits Window {
                         }
                         KeyButton {
                             text: "Alt";
-                            key-width: 55px;
+                            key-width: 55px; is-held: root.alt-held;
                             is-tested: Utils.contains(tested-keys, "Alt");
                             clicked(key) => { key-clicked(key); }
                         }
                         KeyButton {
                             text: "Ctrl";
-                            key-width: 65px;
+                            key-width: 65px; is-held: root.ctrl-held;
                             is-tested: Utils.contains(tested-keys, "Control");
                             clicked(key) => { key-clicked("Control"); }
                         }
                     }
                 }
             }
-
+            // Add space at the bottom
+            VerticalBox {
+                height: 10px;
+            }
         }
     }
 }
