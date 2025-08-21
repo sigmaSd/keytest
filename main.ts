@@ -5,6 +5,9 @@ interface KeyboardWindow {
   tested_keys: string[];
   key_clicked: (key: string) => void;
   run: () => Promise<void>;
+  Utils: {
+    contains: (a: string[], v: string) => boolean;
+  };
 }
 
 if (import.meta.main) {
@@ -12,6 +15,10 @@ if (import.meta.main) {
 
   // deno-lint-ignore no-explicit-any
   const window = new (ui as any).MainWindow() as KeyboardWindow;
+
+  window.Utils.contains = (arr, value) => {
+    return [...arr].includes(value);
+  };
 
   // Initialize tested keys array
   window.tested_keys = [];

@@ -1,5 +1,9 @@
 import { Button, VerticalBox, HorizontalBox } from "std-widgets.slint";
 
+export global Utils {
+    pure callback contains([string], string) -> bool;
+}
+
 component KeyButton inherits Rectangle {
     in property <string> text;
     in property <string> shift-text: "";
@@ -21,7 +25,7 @@ component KeyButton inherits Rectangle {
     drop-shadow-color: is-tested ? #4CAF5080 : #00000020;
     drop-shadow-offset-y: is-tested ? 3px : 1px;
     
-    animate border-color, background, drop-shadow-blur, drop-shadow-offset-y { 
+    animate border-color, background, drop-shadow-blur, drop-shadow-offset-y {
         duration: 200ms; 
         easing: ease-out; 
     }
@@ -84,7 +88,7 @@ export component MainWindow inherits Window {
     height: 600px;
     background: @linear-gradient(135deg, #1E3A8A 0%, #3B82F6 50%, #06B6D4 100%);
     
-    property <[string]> tested-keys: [];
+    in-out property <[string]> tested-keys: [];
     callback key-clicked(string);
     
     // Add keyboard focus capability
@@ -197,85 +201,85 @@ export component MainWindow inherits Window {
                         KeyButton {
                             text: "`";
                             shift-text: "~";
-                            is-tested: tested-keys.contains("`") || tested-keys.contains("~");
+                            is-tested: Utils.contains(tested-keys, "`") || Utils.contains(tested-keys, "~");
                             clicked(key) => { key-clicked(key); }
                         }
                         KeyButton {
                             text: "1";
                             shift-text: "!";
-                            is-tested: tested-keys.contains("1") || tested-keys.contains("!");
+                            is-tested: Utils.contains(tested-keys, "1") || Utils.contains(tested-keys, "!");
                             clicked(key) => { key-clicked(key); }
                         }
                         KeyButton {
                             text: "2";
                             shift-text: "@";
-                            is-tested: tested-keys.contains("2") || tested-keys.contains("@");
+                            is-tested: Utils.contains(tested-keys, "2") || Utils.contains(tested-keys, "@");
                             clicked(key) => { key-clicked(key); }
                         }
                         KeyButton {
                             text: "3";
                             shift-text: "#";
-                            is-tested: tested-keys.contains("3") || tested-keys.contains("#");
+                            is-tested: Utils.contains(tested-keys, "3") || Utils.contains(tested-keys, "#");
                             clicked(key) => { key-clicked(key); }
                         }
                         KeyButton {
                             text: "4";
                             shift-text: "$";
-                            is-tested: tested-keys.contains("4") || tested-keys.contains("$");
+                            is-tested: Utils.contains(tested-keys, "4") || Utils.contains(tested-keys, "$");
                             clicked(key) => { key-clicked(key); }
                         }
                         KeyButton {
                             text: "5";
                             shift-text: "%";
-                            is-tested: tested-keys.contains("5") || tested-keys.contains("%");
+                            is-tested: Utils.contains(tested-keys, "5") || Utils.contains(tested-keys, "%");
                             clicked(key) => { key-clicked(key); }
                         }
                         KeyButton {
                             text: "6";
                             shift-text: "^";
-                            is-tested: tested-keys.contains("6") || tested-keys.contains("^");
+                            is-tested: Utils.contains(tested-keys, "6") || Utils.contains(tested-keys, "^");
                             clicked(key) => { key-clicked(key); }
                         }
                         KeyButton {
                             text: "7";
                             shift-text: "&";
-                            is-tested: tested-keys.contains("7") || tested-keys.contains("&");
+                            is-tested: Utils.contains(tested-keys, "7") || Utils.contains(tested-keys, "&");
                             clicked(key) => { key-clicked(key); }
                         }
                         KeyButton {
                             text: "8";
                             shift-text: "*";
-                            is-tested: tested-keys.contains("8") || tested-keys.contains("*");
+                            is-tested: Utils.contains(tested-keys, "8") || Utils.contains(tested-keys, "*");
                             clicked(key) => { key-clicked(key); }
                         }
                         KeyButton {
                             text: "9";
                             shift-text: "(";
-                            is-tested: tested-keys.contains("9") || tested-keys.contains("(");
+                            is-tested: Utils.contains(tested-keys, "9") || Utils.contains(tested-keys, "(");
                             clicked(key) => { key-clicked(key); }
                         }
                         KeyButton {
                             text: "0";
                             shift-text: ")";
-                            is-tested: tested-keys.contains("0") || tested-keys.contains(")");
+                            is-tested: Utils.contains(tested-keys, "0") || Utils.contains(tested-keys, ")");
                             clicked(key) => { key-clicked(key); }
                         }
                         KeyButton {
                             text: "-";
                             shift-text: "_";
-                            is-tested: tested-keys.contains("-") || tested-keys.contains("_");
+                            is-tested: Utils.contains(tested-keys, "-") || Utils.contains(tested-keys, "_");
                             clicked(key) => { key-clicked(key); }
                         }
                         KeyButton {
                             text: "=";
                             shift-text: "+";
-                            is-tested: tested-keys.contains("=") || tested-keys.contains("+");
+                            is-tested: Utils.contains(tested-keys, "=") || Utils.contains(tested-keys, "+");
                             clicked(key) => { key-clicked(key); }
                         }
                         KeyButton {
                             text: "⌫";
                             key-width: 70px;
-                            is-tested: tested-keys.contains("Backspace");
+                            is-tested: Utils.contains(tested-keys, "Backspace");
                             clicked(key) => { key-clicked("Backspace"); }
                         }
                     }
@@ -288,75 +292,75 @@ export component MainWindow inherits Window {
                         KeyButton {
                             text: "Tab";
                             key-width: 65px;
-                            is-tested: tested-keys.contains("Tab");
+                            is-tested: Utils.contains(tested-keys, "Tab");
                             clicked(key) => { key-clicked(key); }
                         }
                         KeyButton {
                             text: "Q";
-                            is-tested: tested-keys.contains("Q") || tested-keys.contains("q");
+                            is-tested: Utils.contains(tested-keys, "Q") || Utils.contains(tested-keys, "q");
                             clicked(key) => { key-clicked(key); }
                         }
                         KeyButton {
                             text: "W";
-                            is-tested: tested-keys.contains("W") || tested-keys.contains("w");
+                            is-tested: Utils.contains(tested-keys, "W") || Utils.contains(tested-keys, "w");
                             clicked(key) => { key-clicked(key); }
                         }
                         KeyButton {
                             text: "E";
-                            is-tested: tested-keys.contains("E") || tested-keys.contains("e");
+                            is-tested: Utils.contains(tested-keys, "E") || Utils.contains(tested-keys, "e");
                             clicked(key) => { key-clicked(key); }
                         }
                         KeyButton {
                             text: "R";
-                            is-tested: tested-keys.contains("R") || tested-keys.contains("r");
+                            is-tested: Utils.contains(tested-keys, "R") || Utils.contains(tested-keys, "r");
                             clicked(key) => { key-clicked(key); }
                         }
                         KeyButton {
                             text: "T";
-                            is-tested: tested-keys.contains("T") || tested-keys.contains("t");
+                            is-tested: Utils.contains(tested-keys, "T") || Utils.contains(tested-keys, "t");
                             clicked(key) => { key-clicked(key); }
                         }
                         KeyButton {
                             text: "Y";
-                            is-tested: tested-keys.contains("Y") || tested-keys.contains("y");
+                            is-tested: Utils.contains(tested-keys, "Y") || Utils.contains(tested-keys, "y");
                             clicked(key) => { key-clicked(key); }
                         }
                         KeyButton {
                             text: "U";
-                            is-tested: tested-keys.contains("U") || tested-keys.contains("u");
+                            is-tested: Utils.contains(tested-keys, "U") || Utils.contains(tested-keys, "u");
                             clicked(key) => { key-clicked(key); }
                         }
                         KeyButton {
                             text: "I";
-                            is-tested: tested-keys.contains("I") || tested-keys.contains("i");
+                            is-tested: Utils.contains(tested-keys, "I") || Utils.contains(tested-keys, "i");
                             clicked(key) => { key-clicked(key); }
                         }
                         KeyButton {
                             text: "O";
-                            is-tested: tested-keys.contains("O") || tested-keys.contains("o");
+                            is-tested: Utils.contains(tested-keys, "O") || Utils.contains(tested-keys, "o");
                             clicked(key) => { key-clicked(key); }
                         }
                         KeyButton {
                             text: "P";
-                            is-tested: tested-keys.contains("P") || tested-keys.contains("p");
+                            is-tested: Utils.contains(tested-keys, "P") || Utils.contains(tested-keys, "p");
                             clicked(key) => { key-clicked(key); }
                         }
                         KeyButton {
                             text: "[";
                             shift-text: "{";
-                            is-tested: tested-keys.contains("[") || tested-keys.contains("{");
+                            is-tested: Utils.contains(tested-keys, "[") || Utils.contains(tested-keys, "{");
                             clicked(key) => { key-clicked(key); }
                         }
                         KeyButton {
                             text: "]";
                             shift-text: "}";
-                            is-tested: tested-keys.contains("]") || tested-keys.contains("}");
+                            is-tested: Utils.contains(tested-keys, "]") || Utils.contains(tested-keys, "}");
                             clicked(key) => { key-clicked(key); }
                         }
                         KeyButton {
                             text: "\\";
                             shift-text: "|";
-                            is-tested: tested-keys.contains("\\") || tested-keys.contains("|");
+                            is-tested: Utils.contains(tested-keys, "\\") || Utils.contains(tested-keys, "|");
                             clicked(key) => { key-clicked(key); }
                         }
                     }
@@ -369,70 +373,70 @@ export component MainWindow inherits Window {
                         KeyButton {
                             text: "⇪";
                             key-width: 75px;
-                            is-tested: tested-keys.contains("CapsLock");
+                            is-tested: Utils.contains(tested-keys, "CapsLock");
                             clicked(key) => { key-clicked("CapsLock"); }
                         }
                         KeyButton {
                             text: "A";
-                            is-tested: tested-keys.contains("A") || tested-keys.contains("a");
+                            is-tested: Utils.contains(tested-keys, "A") || Utils.contains(tested-keys, "a");
                             clicked(key) => { key-clicked(key); }
                         }
                         KeyButton {
                             text: "S";
-                            is-tested: tested-keys.contains("S") || tested-keys.contains("s");
+                            is-tested: Utils.contains(tested-keys, "S") || Utils.contains(tested-keys, "s");
                             clicked(key) => { key-clicked(key); }
                         }
                         KeyButton {
                             text: "D";
-                            is-tested: tested-keys.contains("D") || tested-keys.contains("d");
+                            is-tested: Utils.contains(tested-keys, "D") || Utils.contains(tested-keys, "d");
                             clicked(key) => { key-clicked(key); }
                         }
                         KeyButton {
                             text: "F";
-                            is-tested: tested-keys.contains("F") || tested-keys.contains("f");
+                            is-tested: Utils.contains(tested-keys, "F") || Utils.contains(tested-keys, "f");
                             clicked(key) => { key-clicked(key); }
                         }
                         KeyButton {
                             text: "G";
-                            is-tested: tested-keys.contains("G") || tested-keys.contains("g");
+                            is-tested: Utils.contains(tested-keys, "G") || Utils.contains(tested-keys, "g");
                             clicked(key) => { key-clicked(key); }
                         }
                         KeyButton {
                             text: "H";
-                            is-tested: tested-keys.contains("H") || tested-keys.contains("h");
+                            is-tested: Utils.contains(tested-keys, "H") || Utils.contains(tested-keys, "h");
                             clicked(key) => { key-clicked(key); }
                         }
                         KeyButton {
                             text: "J";
-                            is-tested: tested-keys.contains("J") || tested-keys.contains("j");
+                            is-tested: Utils.contains(tested-keys, "J") || Utils.contains(tested-keys, "j");
                             clicked(key) => { key-clicked(key); }
                         }
                         KeyButton {
                             text: "K";
-                            is-tested: tested-keys.contains("K") || tested-keys.contains("k");
+                            is-tested: Utils.contains(tested-keys, "K") || Utils.contains(tested-keys, "k");
                             clicked(key) => { key-clicked(key); }
                         }
                         KeyButton {
                             text: "L";
-                            is-tested: tested-keys.contains("L") || tested-keys.contains("l");
+                            is-tested: Utils.contains(tested-keys, "L") || Utils.contains(tested-keys, "l");
                             clicked(key) => { key-clicked(key); }
                         }
                         KeyButton {
                             text: ";";
                             shift-text: ":";
-                            is-tested: tested-keys.contains(";") || tested-keys.contains(":");
+                            is-tested: Utils.contains(tested-keys, ";") || Utils.contains(tested-keys, ":");
                             clicked(key) => { key-clicked(key); }
                         }
                         KeyButton {
                             text: "'";
                             shift-text: "\"";
-                            is-tested: tested-keys.contains("'") || tested-keys.contains("\"");
+                            is-tested: Utils.contains(tested-keys, "'") || Utils.contains(tested-keys, "\"");
                             clicked(key) => { key-clicked(key); }
                         }
                         KeyButton {
                             text: "↵";
                             key-width: 85px;
-                            is-tested: tested-keys.contains("Enter") || tested-keys.contains("\n");
+                            is-tested: Utils.contains(tested-keys, "Enter") || Utils.contains(tested-keys, "\n");
                             clicked(key) => { key-clicked("Enter"); }
                         }
                     }
@@ -445,66 +449,66 @@ export component MainWindow inherits Window {
                         KeyButton {
                             text: "⇧";
                             key-width: 95px;
-                            is-tested: tested-keys.contains("Shift");
+                            is-tested: Utils.contains(tested-keys, "Shift");
                             clicked(key) => { key-clicked("Shift"); }
                         }
                         KeyButton {
                             text: "Z";
-                            is-tested: tested-keys.contains("Z") || tested-keys.contains("z");
+                            is-tested: Utils.contains(tested-keys, "Z") || Utils.contains(tested-keys, "z");
                             clicked(key) => { key-clicked(key); }
                         }
                         KeyButton {
                             text: "X";
-                            is-tested: tested-keys.contains("X") || tested-keys.contains("x");
+                            is-tested: Utils.contains(tested-keys, "X") || Utils.contains(tested-keys, "x");
                             clicked(key) => { key-clicked(key); }
                         }
                         KeyButton {
                             text: "C";
-                            is-tested: tested-keys.contains("C") || tested-keys.contains("c");
+                            is-tested: Utils.contains(tested-keys, "C") || Utils.contains(tested-keys, "c");
                             clicked(key) => { key-clicked(key); }
                         }
                         KeyButton {
                             text: "V";
-                            is-tested: tested-keys.contains("V") || tested-keys.contains("v");
+                            is-tested: Utils.contains(tested-keys, "V") || Utils.contains(tested-keys, "v");
                             clicked(key) => { key-clicked(key); }
                         }
                         KeyButton {
                             text: "B";
-                            is-tested: tested-keys.contains("B") || tested-keys.contains("b");
+                            is-tested: Utils.contains(tested-keys, "B") || Utils.contains(tested-keys, "b");
                             clicked(key) => { key-clicked(key); }
                         }
                         KeyButton {
                             text: "N";
-                            is-tested: tested-keys.contains("N") || tested-keys.contains("n");
+                            is-tested: Utils.contains(tested-keys, "N") || Utils.contains(tested-keys, "n");
                             clicked(key) => { key-clicked(key); }
                         }
                         KeyButton {
                             text: "M";
-                            is-tested: tested-keys.contains("M") || tested-keys.contains("m");
+                            is-tested: Utils.contains(tested-keys, "M") || Utils.contains(tested-keys, "m");
                             clicked(key) => { key-clicked(key); }
                         }
                         KeyButton {
                             text: ",";
                             shift-text: "<";
-                            is-tested: tested-keys.contains(",") || tested-keys.contains("<");
+                            is-tested: Utils.contains(tested-keys, ",") || Utils.contains(tested-keys, "<");
                             clicked(key) => { key-clicked(key); }
                         }
                         KeyButton {
                             text: ".";
                             shift-text: ">";
-                            is-tested: tested-keys.contains(".") || tested-keys.contains(">");
+                            is-tested: Utils.contains(tested-keys, ".") || Utils.contains(tested-keys, ">");
                             clicked(key) => { key-clicked(key); }
                         }
                         KeyButton {
                             text: "/";
                             shift-text: "?";
-                            is-tested: tested-keys.contains("/") || tested-keys.contains("?");
+                            is-tested: Utils.contains(tested-keys, "/") || Utils.contains(tested-keys, "?");
                             clicked(key) => { key-clicked(key); }
                         }
                         KeyButton {
                             text: "⇧";
                             key-width: 95px;
-                            is-tested: tested-keys.contains("Shift");
+                            is-tested: Utils.contains(tested-keys, "Shift");
                             clicked(key) => { key-clicked("Shift"); }
                         }
                     }
@@ -517,34 +521,35 @@ export component MainWindow inherits Window {
                         KeyButton {
                             text: "Ctrl";
                             key-width: 65px;
-                            is-tested: tested-keys.contains("Control");
+                            is-tested: Utils.contains(tested-keys, "Control");
                             clicked(key) => { key-clicked("Control"); }
                         }
                         KeyButton {
                             text: "Alt";
                             key-width: 55px;
-                            is-tested: tested-keys.contains("Alt");
+                            is-tested: Utils.contains(tested-keys, "Alt");
                             clicked(key) => { key-clicked(key); }
                         }
                         SpaceKey {
-                            is-tested: tested-keys.contains(" ") || tested-keys.contains("Space");
+                            is-tested: Utils.contains(tested-keys, " ") || Utils.contains(tested-keys, "Space");
                             clicked(key) => { key-clicked(" "); }
                         }
                         KeyButton {
                             text: "Alt";
                             key-width: 55px;
-                            is-tested: tested-keys.contains("Alt");
+                            is-tested: Utils.contains(tested-keys, "Alt");
                             clicked(key) => { key-clicked(key); }
                         }
                         KeyButton {
                             text: "Ctrl";
                             key-width: 65px;
-                            is-tested: tested-keys.contains("Control");
+                            is-tested: Utils.contains(tested-keys, "Control");
                             clicked(key) => { key-clicked("Control"); }
                         }
                     }
                 }
             }
+
         }
     }
 }
