@@ -11,40 +11,36 @@ component KeyButton inherits Rectangle {
     in property <bool> is-held: false;
     in property <length> key-width: 45px;
     in property <length> key-height: 45px;
-    
+
     callback clicked(string);
-    
+
     width: key-width;
     height: key-height;
     border-radius: 8px;
     border-width: 2px;
     border-color: is-held ? #FBC02D : (is-tested ? #00E676 : #37474F);
-    background: is-held ? 
-        @linear-gradient(135deg, #FFF9C4 0%, #FFF59D 100%) : 
-        (is-tested ? 
-            @linear-gradient(135deg, #E8F5E8 0%, #C8E6C9 100%) : 
-            @linear-gradient(135deg, #FAFAFA 0%, #F0F0F0 100%));
+    background: is-held ? @linear-gradient(135deg, #FFF9C4 0%, #FFF59D 100%) : (is-tested ? @linear-gradient(135deg, #E8F5E8 0%, #C8E6C9 100%) : @linear-gradient(135deg, #FAFAFA 0%, #F0F0F0 100%));
     drop-shadow-blur: is-held ? 8px : (is-tested ? 6px : 2px);
     drop-shadow-color: is-held ? #FBC02D80 : (is-tested ? #4CAF5080 : #00000020);
     drop-shadow-offset-y: is-held ? 4px : (is-tested ? 3px : 1px);
-    
+
     animate border-color, background, drop-shadow-blur, drop-shadow-offset-y {
-        duration: 150ms; 
-        easing: ease-out; 
+        duration: 150ms;
+        easing: ease-out;
     }
-    
+
     VerticalBox {
         alignment: center;
         spacing: 1px;
-        
-        if (root.shift-text != "") : Text {
+
+        if (root.shift-text != ""): Text {
             text: root.shift-text;
             font-size: 9px;
             font-weight: 500;
             color: root.is-held ? #C79100 : (root.is-tested ? #2E7D32 : #78909C);
             horizontal-alignment: center;
         }
-        
+
         Text {
             text: root.text;
             font-size: root.shift-text != "" ? 13px : 15px;
@@ -53,16 +49,16 @@ component KeyButton inherits Rectangle {
             horizontal-alignment: center;
         }
     }
-    
+
     // Success checkmark overlay
-    if (is-tested) : Rectangle {
+    if (is-tested): Rectangle {
         width: 16px;
         height: 16px;
         x: parent.width - 18px;
         y: 2px;
         border-radius: 8px;
         background: #4CAF50;
-        
+
         Text {
             text: "✓";
             font-size: 10px;
@@ -72,7 +68,7 @@ component KeyButton inherits Rectangle {
             vertical-alignment: center;
         }
     }
-    
+
     TouchArea {
         clicked => {
             root.clicked(root.text);
@@ -90,7 +86,7 @@ export component MainWindow inherits Window {
     width: 1100px;
     height: 650px;
     background: @linear-gradient(135deg, #1E3A8A 0%, #3B82F6 50%, #06B6D4 100%);
-    
+
     in-out property <[string]> tested-keys: [];
     in-out property <string> last-key-text: "last key: -";
     in property <bool> shift-held: false;
@@ -100,13 +96,12 @@ export component MainWindow inherits Window {
     callback key-clicked(string);
     callback physical-key-pressed(KeyEvent);
     callback physical-key-released(KeyEvent);
-    
+
     // Add keyboard focus capability
     forward-focus: focus-scope;
-    
+
     focus-scope := FocusScope {
         key-pressed(event) => {
-            debug(event);
             physical-key-pressed(event);
             accept
         }
@@ -115,7 +110,7 @@ export component MainWindow inherits Window {
             accept
         }
     }
-    
+
     // Main container with glassmorphism effect
     Rectangle {
         width: parent.width - 40px;
@@ -128,15 +123,15 @@ export component MainWindow inherits Window {
         border-color: #FFFFFF30;
         drop-shadow-blur: 20px;
         drop-shadow-color: #00000040;
-        
+
         VerticalBox {
             padding: 30px;
             spacing: 25px;
-            
+
             // Header section
             VerticalBox {
                 spacing: 10px;
-                
+
                 Text {
                     text: "🔥 Keyboard Tester";
                     font-size: 28px;
@@ -144,7 +139,7 @@ export component MainWindow inherits Window {
                     color: white;
                     horizontal-alignment: center;
                 }
-                
+
                 Text {
                     text: root.last-key-text;
                     font-size: 16px;
@@ -152,7 +147,7 @@ export component MainWindow inherits Window {
                     color: #E0E7FF;
                     horizontal-alignment: center;
                 }
-                
+
                 // Progress indicator
                 Rectangle {
                     height: 40px;
@@ -160,38 +155,41 @@ export component MainWindow inherits Window {
                     background: #FFFFFF20;
                     border-width: 1px;
                     border-color: #FFFFFF30;
-                    
+
                     HorizontalBox {
                         padding: 15px;
                         alignment: center;
                         spacing: 15px;
-                        
+
                         Text {
                             text: "Keys Tested: " + tested-keys.length + " / 47";
                             font-size: 14px;
                             font-weight: 600;
                             color: white;
                         }
-                        
+
                         // Progress bar
                         Rectangle {
                             width: 200px;
                             height: 8px;
                             border-radius: 4px;
                             background: #FFFFFF30;
-                            
+
                             Rectangle {
                                 width: parent.width * tested-keys.length / 47;
                                 height: parent.height;
                                 border-radius: 4px;
                                 background: @linear-gradient(90deg, #4ADE80 0%, #22C55E 100%);
-                                animate width { duration: 300ms; easing: ease-out; }
+                                animate width {
+                                    duration: 300ms;
+                                    easing: ease-out;
+                                }
                             }
                         }
                     }
                 }
             }
-            
+
             // Keyboard section
             Rectangle {
                 border-radius: 15px;
@@ -200,367 +198,543 @@ export component MainWindow inherits Window {
                 border-color: #FFFFFF20;
                 drop-shadow-blur: 10px;
                 drop-shadow-color: #00000030;
-                
+
                 VerticalBox {
                     padding: 20px;
                     spacing: 8px;
-                    
+
                     // Number row
                     HorizontalBox {
                         spacing: 6px;
                         alignment: center;
-                        
+
                         KeyButton {
                             text: "`";
                             shift-text: "~";
                             is-tested: Utils.contains(tested-keys, "`") || Utils.contains(tested-keys, "~");
-                            clicked(key) => { key-clicked(key); }
+                            clicked(key) => {
+                                key-clicked(key);
+                            }
                         }
+
                         KeyButton {
                             text: "1";
                             shift-text: "!";
                             is-tested: Utils.contains(tested-keys, "1") || Utils.contains(tested-keys, "!");
-                            clicked(key) => { key-clicked(key); }
+                            clicked(key) => {
+                                key-clicked(key);
+                            }
                         }
+
                         KeyButton {
                             text: "2";
                             shift-text: "@";
                             is-tested: Utils.contains(tested-keys, "2") || Utils.contains(tested-keys, "@");
-                            clicked(key) => { key-clicked(key); }
+                            clicked(key) => {
+                                key-clicked(key);
+                            }
                         }
+
                         KeyButton {
                             text: "3";
                             shift-text: "#";
                             is-tested: Utils.contains(tested-keys, "3") || Utils.contains(tested-keys, "#");
-                            clicked(key) => { key-clicked(key); }
+                            clicked(key) => {
+                                key-clicked(key);
+                            }
                         }
+
                         KeyButton {
                             text: "4";
                             shift-text: "$";
                             is-tested: Utils.contains(tested-keys, "4") || Utils.contains(tested-keys, "$");
-                            clicked(key) => { key-clicked(key); }
+                            clicked(key) => {
+                                key-clicked(key);
+                            }
                         }
+
                         KeyButton {
                             text: "5";
                             shift-text: "%";
                             is-tested: Utils.contains(tested-keys, "5") || Utils.contains(tested-keys, "%");
-                            clicked(key) => { key-clicked(key); }
+                            clicked(key) => {
+                                key-clicked(key);
+                            }
                         }
+
                         KeyButton {
                             text: "6";
                             shift-text: "^";
                             is-tested: Utils.contains(tested-keys, "6") || Utils.contains(tested-keys, "^");
-                            clicked(key) => { key-clicked(key); }
+                            clicked(key) => {
+                                key-clicked(key);
+                            }
                         }
+
                         KeyButton {
                             text: "7";
                             shift-text: "&";
                             is-tested: Utils.contains(tested-keys, "7") || Utils.contains(tested-keys, "&");
-                            clicked(key) => { key-clicked(key); }
+                            clicked(key) => {
+                                key-clicked(key);
+                            }
                         }
+
                         KeyButton {
                             text: "8";
                             shift-text: "*";
                             is-tested: Utils.contains(tested-keys, "8") || Utils.contains(tested-keys, "*");
-                            clicked(key) => { key-clicked(key); }
+                            clicked(key) => {
+                                key-clicked(key);
+                            }
                         }
+
                         KeyButton {
                             text: "9";
                             shift-text: "(";
                             is-tested: Utils.contains(tested-keys, "9") || Utils.contains(tested-keys, "(");
-                            clicked(key) => { key-clicked(key); }
+                            clicked(key) => {
+                                key-clicked(key);
+                            }
                         }
+
                         KeyButton {
                             text: "0";
                             shift-text: ")";
                             is-tested: Utils.contains(tested-keys, "0") || Utils.contains(tested-keys, ")");
-                            clicked(key) => { key-clicked(key); }
+                            clicked(key) => {
+                                key-clicked(key);
+                            }
                         }
+
                         KeyButton {
                             text: "-";
                             shift-text: "_";
                             is-tested: Utils.contains(tested-keys, "-") || Utils.contains(tested-keys, "_");
-                            clicked(key) => { key-clicked(key); }
+                            clicked(key) => {
+                                key-clicked(key);
+                            }
                         }
+
                         KeyButton {
                             text: "=";
                             shift-text: "+";
                             is-tested: Utils.contains(tested-keys, "=") || Utils.contains(tested-keys, "+");
-                            clicked(key) => { key-clicked(key); }
+                            clicked(key) => {
+                                key-clicked(key);
+                            }
                         }
+
                         KeyButton {
                             text: "⌫";
                             key-width: 70px;
                             is-tested: Utils.contains(tested-keys, "Backspace");
-                            clicked(key) => { key-clicked("Backspace"); }
+                            clicked(key) => {
+                                key-clicked("Backspace");
+                            }
                         }
                     }
-                    
+
                     // QWERTY row
                     HorizontalBox {
                         spacing: 6px;
                         alignment: center;
-                        
+
                         KeyButton {
                             text: "Tab";
                             key-width: 65px;
                             is-tested: Utils.contains(tested-keys, "Tab");
-                            clicked(key) => { key-clicked(key); }
+                            clicked(key) => {
+                                key-clicked(key);
+                            }
                         }
+
                         KeyButton {
                             text: "Q";
                             is-tested: Utils.contains(tested-keys, "Q") || Utils.contains(tested-keys, "q");
-                            clicked(key) => { key-clicked(key); }
+                            clicked(key) => {
+                                key-clicked(key);
+                            }
                         }
+
                         KeyButton {
                             text: "W";
                             is-tested: Utils.contains(tested-keys, "W") || Utils.contains(tested-keys, "w");
-                            clicked(key) => { key-clicked(key); }
+                            clicked(key) => {
+                                key-clicked(key);
+                            }
                         }
+
                         KeyButton {
                             text: "E";
                             is-tested: Utils.contains(tested-keys, "E") || Utils.contains(tested-keys, "e");
-                            clicked(key) => { key-clicked(key); }
+                            clicked(key) => {
+                                key-clicked(key);
+                            }
                         }
+
                         KeyButton {
                             text: "R";
                             is-tested: Utils.contains(tested-keys, "R") || Utils.contains(tested-keys, "r");
-                            clicked(key) => { key-clicked(key); }
+                            clicked(key) => {
+                                key-clicked(key);
+                            }
                         }
+
                         KeyButton {
                             text: "T";
                             is-tested: Utils.contains(tested-keys, "T") || Utils.contains(tested-keys, "t");
-                            clicked(key) => { key-clicked(key); }
+                            clicked(key) => {
+                                key-clicked(key);
+                            }
                         }
+
                         KeyButton {
                             text: "Y";
                             is-tested: Utils.contains(tested-keys, "Y") || Utils.contains(tested-keys, "y");
-                            clicked(key) => { key-clicked(key); }
+                            clicked(key) => {
+                                key-clicked(key);
+                            }
                         }
+
                         KeyButton {
                             text: "U";
                             is-tested: Utils.contains(tested-keys, "U") || Utils.contains(tested-keys, "u");
-                            clicked(key) => { key-clicked(key); }
+                            clicked(key) => {
+                                key-clicked(key);
+                            }
                         }
+
                         KeyButton {
                             text: "I";
                             is-tested: Utils.contains(tested-keys, "I") || Utils.contains(tested-keys, "i");
-                            clicked(key) => { key-clicked(key); }
+                            clicked(key) => {
+                                key-clicked(key);
+                            }
                         }
+
                         KeyButton {
                             text: "O";
                             is-tested: Utils.contains(tested-keys, "O") || Utils.contains(tested-keys, "o");
-                            clicked(key) => { key-clicked(key); }
+                            clicked(key) => {
+                                key-clicked(key);
+                            }
                         }
+
                         KeyButton {
                             text: "P";
                             is-tested: Utils.contains(tested-keys, "P") || Utils.contains(tested-keys, "p");
-                            clicked(key) => { key-clicked(key); }
+                            clicked(key) => {
+                                key-clicked(key);
+                            }
                         }
+
                         KeyButton {
                             text: "[";
                             shift-text: "{";
                             is-tested: Utils.contains(tested-keys, "[") || Utils.contains(tested-keys, "{");
-                            clicked(key) => { key-clicked(key); }
+                            clicked(key) => {
+                                key-clicked(key);
+                            }
                         }
+
                         KeyButton {
                             text: "]";
                             shift-text: "}";
                             is-tested: Utils.contains(tested-keys, "]") || Utils.contains(tested-keys, "}");
-                            clicked(key) => { key-clicked(key); }
+                            clicked(key) => {
+                                key-clicked(key);
+                            }
                         }
+
                         KeyButton {
                             text: "\\";
                             shift-text: "|";
                             is-tested: Utils.contains(tested-keys, "\\") || Utils.contains(tested-keys, "|");
-                            clicked(key) => { key-clicked(key); }
+                            clicked(key) => {
+                                key-clicked(key);
+                            }
                         }
                     }
-                    
+
                     // ASDF row
                     HorizontalBox {
                         spacing: 6px;
                         alignment: center;
-                        
+
                         KeyButton {
                             text: "⇪";
                             key-width: 75px;
                             is-tested: Utils.contains(tested-keys, "CapsLock");
-                            clicked(key) => { key-clicked("CapsLock"); }
+                            clicked(key) => {
+                                key-clicked("CapsLock");
+                            }
                         }
+
                         KeyButton {
                             text: "A";
                             is-tested: Utils.contains(tested-keys, "A") || Utils.contains(tested-keys, "a");
-                            clicked(key) => { key-clicked(key); }
+                            clicked(key) => {
+                                key-clicked(key);
+                            }
                         }
+
                         KeyButton {
                             text: "S";
                             is-tested: Utils.contains(tested-keys, "S") || Utils.contains(tested-keys, "s");
-                            clicked(key) => { key-clicked(key); }
+                            clicked(key) => {
+                                key-clicked(key);
+                            }
                         }
+
                         KeyButton {
                             text: "D";
                             is-tested: Utils.contains(tested-keys, "D") || Utils.contains(tested-keys, "d");
-                            clicked(key) => { key-clicked(key); }
+                            clicked(key) => {
+                                key-clicked(key);
+                            }
                         }
+
                         KeyButton {
                             text: "F";
                             is-tested: Utils.contains(tested-keys, "F") || Utils.contains(tested-keys, "f");
-                            clicked(key) => { key-clicked(key); }
+                            clicked(key) => {
+                                key-clicked(key);
+                            }
                         }
+
                         KeyButton {
                             text: "G";
                             is-tested: Utils.contains(tested-keys, "G") || Utils.contains(tested-keys, "g");
-                            clicked(key) => { key-clicked(key); }
+                            clicked(key) => {
+                                key-clicked(key);
+                            }
                         }
+
                         KeyButton {
                             text: "H";
                             is-tested: Utils.contains(tested-keys, "H") || Utils.contains(tested-keys, "h");
-                            clicked(key) => { key-clicked(key); }
+                            clicked(key) => {
+                                key-clicked(key);
+                            }
                         }
+
                         KeyButton {
                             text: "J";
                             is-tested: Utils.contains(tested-keys, "J") || Utils.contains(tested-keys, "j");
-                            clicked(key) => { key-clicked(key); }
+                            clicked(key) => {
+                                key-clicked(key);
+                            }
                         }
+
                         KeyButton {
                             text: "K";
                             is-tested: Utils.contains(tested-keys, "K") || Utils.contains(tested-keys, "k");
-                            clicked(key) => { key-clicked(key); }
+                            clicked(key) => {
+                                key-clicked(key);
+                            }
                         }
+
                         KeyButton {
                             text: "L";
                             is-tested: Utils.contains(tested-keys, "L") || Utils.contains(tested-keys, "l");
-                            clicked(key) => { key-clicked(key); }
+                            clicked(key) => {
+                                key-clicked(key);
+                            }
                         }
+
                         KeyButton {
                             text: ";";
                             shift-text: ":";
                             is-tested: Utils.contains(tested-keys, ";") || Utils.contains(tested-keys, ":");
-                            clicked(key) => { key-clicked(key); }
+                            clicked(key) => {
+                                key-clicked(key);
+                            }
                         }
+
                         KeyButton {
                             text: "'";
                             shift-text: "\"";
                             is-tested: Utils.contains(tested-keys, "'") || Utils.contains(tested-keys, "\"");
-                            clicked(key) => { key-clicked(key); }
+                            clicked(key) => {
+                                key-clicked(key);
+                            }
                         }
+
                         KeyButton {
                             text: "↵";
                             key-width: 85px;
                             is-tested: Utils.contains(tested-keys, "Enter") || Utils.contains(tested-keys, "\n");
-                            clicked(key) => { key-clicked("Enter"); }
+                            clicked(key) => {
+                                key-clicked("Enter");
+                            }
                         }
                     }
-                    
+
                     // ZXCV row
                     HorizontalBox {
                         spacing: 6px;
                         alignment: center;
-                        
+
                         KeyButton {
                             text: "⇧";
-                            key-width: 95px; is-held: root.shift-held;
+                            key-width: 95px;
+                            is-held: root.shift-held;
                             is-tested: Utils.contains(tested-keys, "Shift");
-                            clicked(key) => { key-clicked("Shift"); }
+                            clicked(key) => {
+                                key-clicked("Shift");
+                            }
                         }
+
                         KeyButton {
                             text: "Z";
                             is-tested: Utils.contains(tested-keys, "Z") || Utils.contains(tested-keys, "z");
-                            clicked(key) => { key-clicked(key); }
+                            clicked(key) => {
+                                key-clicked(key);
+                            }
                         }
+
                         KeyButton {
                             text: "X";
                             is-tested: Utils.contains(tested-keys, "X") || Utils.contains(tested-keys, "x");
-                            clicked(key) => { key-clicked(key); }
+                            clicked(key) => {
+                                key-clicked(key);
+                            }
                         }
+
                         KeyButton {
                             text: "C";
                             is-tested: Utils.contains(tested-keys, "C") || Utils.contains(tested-keys, "c");
-                            clicked(key) => { key-clicked(key); }
+                            clicked(key) => {
+                                key-clicked(key);
+                            }
                         }
+
                         KeyButton {
                             text: "V";
                             is-tested: Utils.contains(tested-keys, "V") || Utils.contains(tested-keys, "v");
-                            clicked(key) => { key-clicked(key); }
+                            clicked(key) => {
+                                key-clicked(key);
+                            }
                         }
+
                         KeyButton {
                             text: "B";
                             is-tested: Utils.contains(tested-keys, "B") || Utils.contains(tested-keys, "b");
-                            clicked(key) => { key-clicked(key); }
+                            clicked(key) => {
+                                key-clicked(key);
+                            }
                         }
+
                         KeyButton {
                             text: "N";
                             is-tested: Utils.contains(tested-keys, "N") || Utils.contains(tested-keys, "n");
-                            clicked(key) => { key-clicked(key); }
+                            clicked(key) => {
+                                key-clicked(key);
+                            }
                         }
+
                         KeyButton {
                             text: "M";
                             is-tested: Utils.contains(tested-keys, "M") || Utils.contains(tested-keys, "m");
-                            clicked(key) => { key-clicked(key); }
+                            clicked(key) => {
+                                key-clicked(key);
+                            }
                         }
+
                         KeyButton {
                             text: ",";
                             shift-text: "<";
                             is-tested: Utils.contains(tested-keys, ",") || Utils.contains(tested-keys, "<");
-                            clicked(key) => { key-clicked(key); }
+                            clicked(key) => {
+                                key-clicked(key);
+                            }
                         }
+
                         KeyButton {
                             text: ".";
                             shift-text: ">";
                             is-tested: Utils.contains(tested-keys, ".") || Utils.contains(tested-keys, ">");
-                            clicked(key) => { key-clicked(key); }
+                            clicked(key) => {
+                                key-clicked(key);
+                            }
                         }
+
                         KeyButton {
                             text: "/";
                             shift-text: "?";
                             is-tested: Utils.contains(tested-keys, "/") || Utils.contains(tested-keys, "?");
-                            clicked(key) => { key-clicked(key); }
+                            clicked(key) => {
+                                key-clicked(key);
+                            }
                         }
+
                         KeyButton {
                             text: "⇧";
-                            key-width: 95px; is-held: root.shift-held;
+                            key-width: 95px;
+                            is-held: root.shift-held;
                             is-tested: Utils.contains(tested-keys, "Shift");
-                            clicked(key) => { key-clicked("Shift"); }
+                            clicked(key) => {
+                                key-clicked("Shift");
+                            }
                         }
                     }
-                    
+
                     // Space bar row
                     HorizontalBox {
                         spacing: 6px;
                         alignment: center;
-                        
+
                         KeyButton {
                             text: "Ctrl";
-                            key-width: 65px; is-held: root.ctrl-held;
+                            key-width: 65px;
+                            is-held: root.ctrl-held;
                             is-tested: Utils.contains(tested-keys, "Control");
-                            clicked(key) => { key-clicked("Control"); }
+                            clicked(key) => {
+                                key-clicked("Control");
+                            }
                         }
+
                         KeyButton {
                             text: "Alt";
-                            key-width: 55px; is-held: root.alt-held;
+                            key-width: 55px;
+                            is-held: root.alt-held;
                             is-tested: Utils.contains(tested-keys, "Alt");
-                            clicked(key) => { key-clicked(key); }
+                            clicked(key) => {
+                                key-clicked(key);
+                            }
                         }
+
                         SpaceKey {
                             is-tested: Utils.contains(tested-keys, " ") || Utils.contains(tested-keys, "Space");
-                            clicked(key) => { key-clicked(" "); }
+                            clicked(key) => {
+                                key-clicked(" ");
+                            }
                         }
+
                         KeyButton {
                             text: "Alt";
-                            key-width: 55px; is-held: root.alt-held;
+                            key-width: 55px;
+                            is-held: root.alt-held;
                             is-tested: Utils.contains(tested-keys, "Alt");
-                            clicked(key) => { key-clicked(key); }
+                            clicked(key) => {
+                                key-clicked(key);
+                            }
                         }
+
                         KeyButton {
                             text: "Ctrl";
-                            key-width: 65px; is-held: root.ctrl-held;
+                            key-width: 65px;
+                            is-held: root.ctrl-held;
                             is-tested: Utils.contains(tested-keys, "Control");
-                            clicked(key) => { key-clicked("Control"); }
+                            clicked(key) => {
+                                key-clicked("Control");
+                            }
                         }
                     }
                 }
             }
+
             // Add space at the bottom
             VerticalBox {
                 height: 10px;
