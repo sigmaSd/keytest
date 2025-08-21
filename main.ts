@@ -4,6 +4,13 @@ import slintUi from "./keyboard_tester.slint" with { type: "text" };
 interface SlintKeyEvent {
   text: string;
   key: string;
+  modifiers: {
+    alt: boolean;
+    control: boolean;
+    meta: boolean;
+    shift: boolean;
+  };
+  repeat: boolean;
 }
 
 interface KeyboardWindow {
@@ -65,19 +72,20 @@ if (import.meta.main) {
   };
 
   window.physical_key_pressed = (event: SlintKeyEvent) => {
+    window.shift_held = event.modifiers.shift;
+    window.ctrl_held = event.modifiers.control;
+    window.alt_held = event.modifiers.alt;
+
     let key_to_process;
 
     switch (event.key) {
       case "Shift":
-        window.shift_held = true;
         key_to_process = "Shift";
         break;
       case "Control":
-        window.ctrl_held = true;
         key_to_process = "Control";
         break;
       case "Alt":
-        window.alt_held = true;
         key_to_process = "Alt";
         break;
       case "Space":
@@ -111,20 +119,12 @@ if (import.meta.main) {
   };
 
   window.physical_key_released = (event: SlintKeyEvent) => {
-    switch (event.key) {
-      case "Shift":
-        window.shift_held = false;
-        break;
-      case "Control":
-        window.ctrl_held = false;
-        break;
-      case "Alt":
-        window.alt_held = false;
-        break;
-    }
+    window.shift_held = event.modifiers.shift;
+    window.ctrl_held = event.modifiers.control;
+    window.alt_held = event.modifiers.alt;
   };
 
-  console.log("🚀 Modern Keyboard Tester Started!");
+  console.log("🚀 Keyboard Tester Started!");
   console.log("💡 Goal: Test all 47 keys to make them turn green!");
   console.log("📋 Click keys or type on your physical keyboard");
   console.log("🎯 Green keys = Tested ✅ | Gray keys = Not tested yet");
